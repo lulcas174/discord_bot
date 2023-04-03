@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 from discord import Intents
 from cep_commands import get_cep
-import gettext
+import asyncio
 
 from cotation_commands import get_dollar_cotation, get_euro_cotation
 from holidays_commands import get_holidays
@@ -78,15 +78,18 @@ async def cep(context, cep):
 async def feriados(context, year):
     try:
         holidays = await get_holidays(year)
-        holidays_list = holidays['response']['holidays']
+        if holidays is not None:
+            holidays_list = holidays['response']['holidays']
 
-        for holiday_information in holidays_list:
-            holiday = {
-                'name': holiday_information['name'],
-                'country': holiday_information['country']['name'],
-                'date': holiday_information['date']['iso']
-            }
-            await context.send(f"O feriado {holiday['name']} acontece no {holiday['country']} no dia {holiday['date']}")
+            for holiday_information in holidays_list:
+                holiday = {
+                    'name': holiday_information['name'],
+                    'country': holiday_information['country']['name'],
+                    'date': holiday_information['date']['iso']
+                }
+                await context.send(f"O feriado {holiday['name']} acontece no {holiday['country']} no dia {holiday['date']}")
+        else:
+            await context.send('Não foi possível recuperar a lista de feriados.')
     except Exception as e:
         await context.send(f'Ocorreu um erro ao processar o ano: {e}')
 
