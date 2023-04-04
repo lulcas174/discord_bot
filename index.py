@@ -1,10 +1,9 @@
 from discord.ext import commands
+from discord import Intents
+
 from dotenv import load_dotenv
 import os
-from discord import Intents
 from cep_commands import get_cep
-import asyncio
-
 from cotation_commands import get_dollar_cotation, get_euro_cotation
 from holidays_commands import get_holidays
 
@@ -92,7 +91,6 @@ async def feriados(context, year):
             await context.send('Não foi possível recuperar a lista de feriados.')
     except Exception as e:
         await context.send(f'Ocorreu um erro ao processar o ano: {e}')
-
 
 
 bot.run(TOKEN)
